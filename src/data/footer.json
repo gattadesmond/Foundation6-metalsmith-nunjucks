@@ -1,0 +1,17 @@
+{
+  "title": "Danh sách items trong menu",
+  "items" : [
+      {
+        "title" : "Trang chủ",
+        "url" : ""
+      },
+      {
+        "title" : "Về chúng tôi",
+        "url" : "aboutus"
+      },
+      {
+        "title" : "Tin tức",
+        "url" : "news"
+      }
+  ]
+}

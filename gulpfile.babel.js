@@ -14,9 +14,12 @@ import metalsmithLayouts   from  'metalsmith-layouts';
 import metalsmithMarkdown   from 'metalsmith-markdown';
 import metalsmithMatters from 'metalsmith-matters';
 import metalsmithCollections from 'metalsmith-collections';
+import metadata from 'metalsmith-metadata-directory';
 
 import handlebars       from 'handlebars';
 import handlebarsLayouts from 'handlebars-layouts';
+
+import inline from 'gulp-inline-source';
 
 handlebars.registerHelper(handlebarsLayouts(handlebars));
 
@@ -36,7 +39,7 @@ function loadConfig() {
 
 // Build the "dist" folder by running all of the below tasks
 gulp.task('build',
- gulp.series(clean, gulp.parallel(pages, sass, javascript, images, copy), styleGuide));
+ gulp.series(clean, gulp.parallel(pages, sass, javascript, images, copy, inlineSource), styleGuide));
 
 // Build the site, run the server, and watch for file changes
 gulp.task('default',
@@ -76,13 +79,24 @@ function pages(){
           // Files to exclude from the build 
           ignore: ['src/*.tmp'],
           // Parsing frontmatter, defaults to true 
-          frontmatter: true,
+          frontmatter: false,
           // Metalsmith plugins to use: 
           source :'/src/pages',
+          clean: false,
 
           destination :'/dist',
 
           use: [
+            metadata({
+              directory: 'src/data/**/*.json'
+            }),
+            metalsmithMatters({
+                '_enable': true,
+                'delims':  ['---json', '---'],
+                'options': {
+                    'lang': 'json'
+                }
+              }),
               metalsmithMarkdown({
                 '_enable':     true,
                 'smartypants': true,
@@ -97,14 +111,8 @@ function pages(){
               }),
               metalsmithCollections({
                 posts: 'pages/*.md' 
-              }),
-              metalsmithMatters({
-                '_enable': true,
-                'delims':  ['---json', '---'],
-                'options': {
-                    'lang': 'json'
-                }
               })
+              
           ],
           // Initial Metalsmith metadata, defaults to {} 
           metadata: {
@@ -120,9 +128,27 @@ function pages(){
 
 // Load updated HTML templates and partials into Panini
 function resetPages(done) {
-  panini.refresh();
+  // panini.refresh();
   done();
 }
+
+function inlineSource(done) {
+    if (PRODUCTION) {
+        console.log('development mode, skipping inlineSource');
+        return done();
+    }
+    return gulp.src(`PATHS.dist/**/*.html`)
+        .pipe(inline({
+            rootpath:      PATHS.dist,
+            ignore:        ['svg', 'png'],
+            compress:      false,
+            swallowErrors: false
+        }))
+        .pipe(gulp.dest(file => {
+            return file.base;
+        }));
+}
+
 
 // Generate a style guide from the Markdown content and HTML template in styleguide/
 function styleGuide(done) {
@@ -193,8 +219,8 @@ function reload(done) {
 // Watch for changes to static assets, pages, Sass, and JavaScript
 function watch() {
   gulp.watch(PATHS.assets, copy);
-  gulp.watch('src/pages/**/*.html').on('all', gulp.series(pages, browser.reload));
-  gulp.watch('src/{layouts,partials}/**/*.html').on('all', gulp.series(resetPages, pages, browser.reload));
+  gulp.watch(['src/pages/**/*.html','src/pages/**/*.md']).on('all', gulp.series(pages, browser.reload));
+  gulp.watch('src/layouts/**/*.html').on('all', gulp.series(resetPages, pages, browser.reload));
   gulp.watch('src/assets/scss/**/*.scss').on('all', gulp.series(sass, browser.reload));
   gulp.watch('src/assets/js/**/*.js').on('all', gulp.series(javascript, browser.reload));
   gulp.watch('src/assets/img/**/*').on('all', gulp.series(images, browser.reload));
