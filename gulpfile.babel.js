@@ -9,6 +9,7 @@ import rimraf   from 'rimraf';
 import sherpa   from 'style-sherpa';
 import yaml     from 'js-yaml';
 import fs       from 'fs';
+
 import metalsmith from 'gulp-metalsmith';
 import metalsmithLayouts   from  'metalsmith-layouts';
 import metalsmithMarkdown   from 'metalsmith-markdown';
@@ -16,12 +17,11 @@ import metalsmithMatters from 'metalsmith-matters';
 import metalsmithCollections from 'metalsmith-collections';
 import metadata from 'metalsmith-metadata-directory';
 
-import handlebars       from 'handlebars';
-import handlebarsLayouts from 'handlebars-layouts';
+import Handlebars       from 'handlebars';
+require('./src/helpers/handlebars-helper.js')(Handlebars);
 
 import inline from 'gulp-inline-source';
 
-handlebars.registerHelper(handlebarsLayouts(handlebars));
 
 // Load all Gulp plugins into one variable
 const $ = plugins();
@@ -39,7 +39,7 @@ function loadConfig() {
 
 // Build the "dist" folder by running all of the below tasks
 gulp.task('build',
- gulp.series(clean, gulp.parallel(pages, sass, javascript, images, copy, inlineSource), styleGuide));
+ gulp.series(clean, gulp.parallel(pages, sass, javascript, images, copy), inlineSource, styleGuide));
 
 // Build the site, run the server, and watch for file changes
 gulp.task('default',
@@ -133,11 +133,11 @@ function resetPages(done) {
 }
 
 function inlineSource(done) {
-    if (PRODUCTION) {
+    if (!PRODUCTION) {
         console.log('development mode, skipping inlineSource');
         return done();
     }
-    return gulp.src(`PATHS.dist/**/*.html`)
+    return gulp.src('dist/**/*.html')
         .pipe(inline({
             rootpath:      PATHS.dist,
             ignore:        ['svg', 'png'],
