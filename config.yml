@@ -27,6 +27,8 @@ PATHS:
   sass:
     - "bower_components/foundation-sites/scss"
     - "bower_components/motion-ui/src"
+    - "bower_components/css-hamburgers/_sass/hamburgers"
+    - "bower_components/bourbon/app/assets/stylesheets"
   # Paths to JavaScript libraries, which are combined into one file
   javascript:
     # Libraries required by Foundation
@@ -57,6 +59,10 @@ PATHS:
     - "bower_components/foundation-sites/js/foundation.toggler.js"
     - "bower_components/foundation-sites/js/foundation.tooltip.js"
     - "bower_components/foundation-sites/js/foundation.zf.responsiveAccordionTabs.js"
+    # Plugins
+    - "bower_components/lazysizes/lazysizes.min.js"
+    - "bower_components/sweetalert/dist/sweetalert.min.js"
+    - "bower_components/swiper/dist/js/swiper.min.js"
     # Paths to your own project code are here
     - "src/assets/js/!(app).js"
     - "src/assets/js/app.js"

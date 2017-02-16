@@ -1,0 +1,25 @@
+%force-hardware{
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+
+%force-hardware-2{
+  transform: translate3d(0, 0, 0);
+}
+
+/*! Ellipsis text */
+%ellipsis {
+  text-overflow: ellipsis;
+  /* Required for text-overflow to do anything */
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+
+/*! Disable select */
+%none-select{
+  user-select: none;
+}
+

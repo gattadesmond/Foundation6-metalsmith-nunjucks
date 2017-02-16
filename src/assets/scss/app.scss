@@ -5,8 +5,8 @@
 @import 'motion-ui';
 
 @include foundation-global-styles;
-@include foundation-grid;
-// @include foundation-flex-grid;
+// @include foundation-grid;
+@include foundation-flex-grid;
 @include foundation-typography;
 @include foundation-button;
 @include foundation-forms;
@@ -45,7 +45,46 @@
 @include foundation-top-bar;
 @include foundation-visibility-classes;
 @include foundation-float-classes;
-// @include foundation-flex-classes;
+@include foundation-flex-classes;
 
 @include motion-ui-transitions;
 @include motion-ui-animations;
+
+
+// Add themify Icon
+@import 'themify-icons';
+
+//Add mixins bourbom
+@import "vendors/bourbon/bourbon";
+
+@import 'abstracts/variables';
+@import 'abstracts/functions';
+@import 'abstracts/mixins';
+@import 'abstracts/placeholders';
+
+
+@import 'base/reset';
+@import 'base/typography';
+@import 'base/class';
+
+@import 'layout/header';
+@import 'layout/navigation';
+@import 'layout/grid';
+@import 'layout/breadcrumb';
+@import 'layout/footer';
+@import 'layout/sidebar';
+
+
+@import 'components/chosen';
+@import 'components/datepicker';
+
+@import 'components/loading';
+@import 'components/popup';
+
+@import 'vendors/hamburgers/hamburgers';
+
+@import "vendors/sweetalert/sweetalert";
+@import "vendors/sweetalert/loader-animation";
+@import "vendors/sweetalert/ie9";
+
+@import "vendors/swiper/swiper";

@@ -56,5 +56,17 @@ src/
    
 ```
 
+Many thanks for ZURB Template.
 
-## Thanks for ZURB Template
+## Library and plugins inlcude :
+
+### CSS library :
+- Bourbon - sass mixins library [Bourbon](http://bourbon.io)
+- Hamburgers - CSS-animated hamburgers [Hamburgers](https://jonsuh.com/hamburgers/)
+- Themify icons - https://themify.me/themify-icons
+
+
+### Plugins include
+- Lazysizes - lazyloader for images - https://github.com/aFarkas/lazysizes
+- Sweetalert - http://t4t5.github.io/sweetalert/
+- Swiper - http://idangero.us/swiper/#.WKVXzvmLSUk
