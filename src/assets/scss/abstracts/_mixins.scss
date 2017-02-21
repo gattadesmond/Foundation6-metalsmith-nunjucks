@@ -1,6 +1,6 @@
-@mixin header-size($type) {
-  font-size: rem-calc(map_get(map_get($header-sizes, "small"), $type) * 1px);
+@mixin header-size($type){
+  font-size : rem-calc(map_get(map_get(map_get($header-styles, "small"),$type), "font-size") * 1px);
   @include breakpoint(medium) {
-    font-size: rem-calc(map_get(map_get($header-sizes, "medium"), $type) * 1px);
+    font-size : rem-calc(map_get(map_get(map_get($header-styles, "medium"),$type), "font-size") * 1px);
   }
 }
