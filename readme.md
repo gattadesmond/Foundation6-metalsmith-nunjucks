@@ -22,6 +22,7 @@ To use this template, your computer needs:
 ### Using the CLI
 
 ```bash
+npm install
 yarn install
 bower install
 ```
