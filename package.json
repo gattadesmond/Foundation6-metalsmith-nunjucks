@@ -35,10 +35,7 @@
     "style-sherpa": "^1.0.0",
     "yargs": "^3.8.0"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/zurb/foundation-zurb-template.git"
-  },
+  "repository": "https://github.com/zurb/foundation-zurb-template.git",
   "bugs": {
     "url": "https://github.com/zurb/foundation-sites/issues",
     "email": "foundation@zurb.com"
