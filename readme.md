@@ -22,17 +22,17 @@ To use this template, your computer needs:
 ### Using the CLI
 
 ```bash
-npm install
+yarn install
 bower install
 ```
 
-Finally, run `npm start` to run Gulp. Your finished site will be created in a folder called `dist`, viewable at this URL:
+Finally, run `yarn start` to run Gulp. Your finished site will be created in a folder called `dist`, viewable at this URL:
 
 ```
 http://localhost:8000
 ```
 
-To create compressed, production-ready assets, run `npm run build`.
+To create compressed, production-ready assets, run `yarn run build`.
 
 ### What's included
 
