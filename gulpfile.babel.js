@@ -4,7 +4,7 @@ import plugins  from 'gulp-load-plugins';
 import yargs    from 'yargs';
 import browser  from 'browser-sync';
 import gulp     from 'gulp';
-import panini   from 'panini';
+// import panini   from 'panini';
 import rimraf   from 'rimraf';
 import sherpa   from 'style-sherpa';
 import yaml     from 'js-yaml';
@@ -39,7 +39,7 @@ function loadConfig() {
 
 // Build the "dist" folder by running all of the below tasks
 gulp.task('build',
- gulp.series(clean, gulp.parallel(pages, sass, gulp.series(javascriptApp, javascript), images, copy), inlineSource, styleGuide));
+ gulp.series(clean, gulp.parallel(pages, sass, gulp.series(javascript), images, copy), inlineSource, styleGuide));
 
 // Build the site, run the server, and watch for file changes
 gulp.task('default',
@@ -172,7 +172,9 @@ function sass() {
     }))
     // Comment in the pipe below to run UnCSS in production
     //.pipe($.if(PRODUCTION, $.uncss(UNCSS_OPTIONS)))
-    .pipe($.if(PRODUCTION, $.cssnano()))
+    .pipe($.if(PRODUCTION, $.cssnano({
+      zindex: false
+    })))
     .pipe($.if(!PRODUCTION, $.sourcemaps.write()))
     .pipe(gulp.dest(PATHS.dist + '/assets/css'))
     .pipe(browser.reload({ stream: true }));
@@ -181,25 +183,24 @@ function sass() {
 // Combine JavaScript into one file
 // In production, the file is minified
 
-function javascriptApp(){
-  return gulp.src([
-    "src/assets/js/*.js"
-  ])
-    .pipe($.babel({
-      "presets": ["es2015"],
-      ignore: ['what-input.js']
-    }))
-    //.pipe($.concat('app.es5.js'))
+// function javascriptApp(){
+//   return gulp.src([
+//     "src/assets/js/*.js"
+//   ])
+//     .pipe($.babel({
+//       "presets": ["es2015"],
+//       ignore: ['what-input.js']
+//     }))
+//     //.pipe($.concat('app.es5.js'))
  
-    .pipe(gulp.dest(PATHS.dist + '/assets/js'));
-}
+//     .pipe(gulp.dest(PATHS.dist + '/assets/js'));
+// }
 
 
 function javascript() {
   return gulp.src(PATHS.javascript)
     // .pipe($.sourcemaps.init())
     .pipe($.babel({
-      "presets": ["es2015"],
       ignore: ['what-input.js']}))
     .pipe($.concat('app.js'))
     .pipe($.if(PRODUCTION, $.uglify()
@@ -237,9 +238,9 @@ function reload(done) {
 function watch() {
   gulp.watch(PATHS.assets, copy);
   gulp.watch(['src/pages/**/*.html','src/pages/**/*.md']).on('all', gulp.series(pages, browser.reload));
-  gulp.watch('src/layouts/**/*.html').on('all', gulp.series(resetPages, pages, browser.reload));
-  gulp.watch('src/assets/scss/**/*.scss').on('all', gulp.series(sass));
-  gulp.watch('src/assets/js/**/*.js').on('all', gulp.series(javascriptApp, javascript, browser.reload));
+  gulp.watch('src/layouts/**/*.html').on('all', gulp.series(pages, browser.reload));
+  gulp.watch('src/assets/scss/**/*.scss').on('all', sass);
+  gulp.watch('src/assets/js/**/*.js').on('all', gulp.series(javascript, browser.reload));
   gulp.watch('src/assets/img/**/*').on('all', gulp.series(images, browser.reload));
-  gulp.watch('src/styleguide/**').on('all', gulp.series(styleGuide, browser.reload));
+  // gulp.watch('src/styleguide/**').on('all', gulp.series(styleGuide, browser.reload));
 }
