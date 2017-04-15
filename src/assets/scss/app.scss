@@ -54,14 +54,10 @@
 // Add themify Icon
 @import 'themify-icons';
 
-//Add mixins bourbom
-@import "vendors/bourbon/bourbon";
-
 @import 'abstracts/variables';
 @import 'abstracts/functions';
 @import 'abstracts/mixins';
 @import 'abstracts/placeholders';
-
 
 @import 'base/reset';
 @import 'base/typography';
