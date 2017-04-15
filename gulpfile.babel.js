@@ -1,24 +1,34 @@
 'use strict';
 
-import plugins  from 'gulp-load-plugins';
-import yargs    from 'yargs';
-import browser  from 'browser-sync';
-import gulp     from 'gulp';
+import plugins from 'gulp-load-plugins';
+import yargs from 'yargs';
+import browser from 'browser-sync';
+import gulp from 'gulp';
 // import panini   from 'panini';
-import rimraf   from 'rimraf';
-import sherpa   from 'style-sherpa';
-import yaml     from 'js-yaml';
-import fs       from 'fs';
+import rimraf from 'rimraf';
+import sherpa from 'style-sherpa';
+import yaml from 'js-yaml';
+import fs from 'fs';
 
 import metalsmith from 'gulp-metalsmith';
-import metalsmithLayouts   from  'metalsmith-layouts';
-import metalsmithMarkdown   from 'metalsmith-markdown';
+import metalsmithLayouts from 'metalsmith-layouts';
+import metalsmithMarkdown from 'metalsmith-markdown';
 import metalsmithMatters from 'metalsmith-matters';
 import metalsmithCollections from 'metalsmith-collections';
 import metadata from 'metalsmith-metadata-directory';
 
-import Handlebars       from 'handlebars';
-require('./src/helpers/handlebars-helper.js')(Handlebars);
+import nunjucks from 'nunjucks';
+nunjucks.configure('src/layouts', {
+  "autoescape": true,
+  "watch": false,
+  "noCache": true
+})
+
+
+
+// import Handlebars       from 'handlebars';
+
+// require('./src/helpers/handlebars-helper.js')(Handlebars);
 
 import inline from 'gulp-inline-source';
 
@@ -30,7 +40,12 @@ const $ = plugins();
 const PRODUCTION = !!(yargs.argv.production);
 
 // Load settings from settings.yml
-const { COMPATIBILITY, PORT, UNCSS_OPTIONS, PATHS } = loadConfig();
+const {
+  COMPATIBILITY,
+  PORT,
+  UNCSS_OPTIONS,
+  PATHS
+} = loadConfig();
 
 function loadConfig() {
   let ymlFile = fs.readFileSync('config.yml', 'utf8');
@@ -39,7 +54,7 @@ function loadConfig() {
 
 // Build the "dist" folder by running all of the below tasks
 gulp.task('build',
- gulp.series(clean, gulp.parallel(pages, sass, gulp.series(javascript), images, copy), inlineSource, styleGuide));
+  gulp.series(clean, gulp.parallel(pages, sass, gulp.series(javascript), images, copy), inlineSource, styleGuide));
 
 // Build the site, run the server, and watch for file changes
 gulp.task('default',
@@ -59,71 +74,74 @@ function copy() {
 }
 
 // Copy page templates into finished HTML files
-function pages2() {
-  return gulp.src('src/pages/**/*.{html,hbs,handlebars}')
-    .pipe(panini({
-      root: 'src/pages/',
-      layouts: 'src/layouts/',
-      partials: 'src/partials/',
-      data: 'src/data/',
-      helpers: 'src/helpers/'
+// function pages2() {
+//   return gulp.src('src/pages/**/*.{html,hbs,handlebars}')
+//     .pipe(panini({
+//       root: 'src/pages/',
+//       layouts: 'src/layouts/',
+//       partials: 'src/partials/',
+//       data: 'src/data/',
+//       helpers: 'src/helpers/'
+//     }))
+//     .pipe(gulp.dest(PATHS.dist));
+// }
+
+function pages() {
+  return gulp.src('src/pages/**')
+    .pipe(metalsmith({
+      // Metalsmith's root directory, for example for locating templates, defaults to CWD 
+      root: __dirname,
+      // Files to exclude from the build 
+      ignore: ['src/*.tmp'],
+      // Parsing frontmatter, defaults to true 
+      frontmatter: false,
+      // Metalsmith plugins to use: 
+      source: '/src/pages',
+      clean: false,
+
+      destination: '/dist',
+
+      use: [
+        metadata({
+          directory: 'src/data/**/*.json'
+        }),
+
+        metalsmithMatters({
+          '_enable': true,
+          'delims': ['---json', '---'],
+          'options': {
+            'lang': 'json'
+          }
+        }),
+        metalsmithMarkdown({
+          '_enable': true,
+          'smartypants': true,
+          'smartLists': true,
+          'gfm': true,
+          'tables': true
+        }),
+        metalsmithLayouts({
+          'engine': 'nunjucks',
+          'pattern': '**/*.html',
+          'directory': 'src/layouts',
+          
+          // 'partials':  'src/layouts/partials/'
+        }),
+        metalsmithCollections({
+          posts: 'pages/*.md'
+        })
+
+      ],
+      // Initial Metalsmith metadata, defaults to {} 
+      metadata: {
+        site_title: 'Sample static site'
+      },
+      // List of JSON files that contain page definitions 
+      // true means "all JSON files", see the section below 
+      json: ['src/pages.json']
+
     }))
     .pipe(gulp.dest(PATHS.dist));
-}
-
-function pages(){
-  return gulp.src('src/pages/**')
-      .pipe(metalsmith({
-          // Metalsmith's root directory, for example for locating templates, defaults to CWD 
-          root: __dirname,
-          // Files to exclude from the build 
-          ignore: ['src/*.tmp'],
-          // Parsing frontmatter, defaults to true 
-          frontmatter: false,
-          // Metalsmith plugins to use: 
-          source :'/src/pages',
-          clean: false,
-
-          destination :'/dist',
-
-          use: [
-            metadata({
-              directory: 'src/data/**/*.json'
-            }),
-            metalsmithMatters({
-                '_enable': true,
-                'delims':  ['---json', '---'],
-                'options': {
-                    'lang': 'json'
-                }
-              }),
-              metalsmithMarkdown({
-                '_enable':     true,
-                'smartypants': true,
-                'smartLists':  true,
-                'gfm':         true,
-                'tables':      true
-              }),
-              metalsmithLayouts({
-                engine: 'handlebars',
-                'directory': 'src/layouts/',
-                'partials':  'src/layouts/partials/'
-              }),
-              metalsmithCollections({
-                posts: 'pages/*.md' 
-              })
-              
-          ],
-          // Initial Metalsmith metadata, defaults to {} 
-          metadata: {
-              site_title: 'Sample static site'
-          },
-          // List of JSON files that contain page definitions 
-          // true means "all JSON files", see the section below 
-          json: ['src/pages.json']
-
-      }))
-      .pipe(gulp.dest(PATHS.dist));
 }
 
 // Load updated HTML templates and partials into Panini
@@ -133,20 +151,20 @@ function resetPages(done) {
 }
 
 function inlineSource(done) {
-    if (!PRODUCTION) {
-        console.log('development mode, skipping inlineSource');
-        return done();
-    }
-    return gulp.src('dist/**/*.html')
-        .pipe(inline({
-            rootpath:      PATHS.dist,
-            ignore:        ['svg', 'png'],
-            compress:      false,
-            swallowErrors: false
-        }))
-        .pipe(gulp.dest(file => {
-            return file.base;
-        }));
+  if (!PRODUCTION) {
+    console.log('development mode, skipping inlineSource');
+    return done();
+  }
+  return gulp.src('dist/**/*.html')
+    .pipe(inline({
+      rootpath: PATHS.dist,
+      ignore: ['svg', 'png'],
+      compress: false,
+      swallowErrors: false
+    }))
+    .pipe(gulp.dest(file => {
+      return file.base;
+    }));
 }
 
 
@@ -164,8 +182,8 @@ function sass() {
   return gulp.src('src/assets/scss/app.scss')
     .pipe($.sourcemaps.init())
     .pipe($.sass({
-      includePaths: PATHS.sass
-    })
+        includePaths: PATHS.sass
+      })
       .on('error', $.sass.logError))
     .pipe($.autoprefixer({
       browsers: COMPATIBILITY
@@ -177,7 +195,9 @@ function sass() {
     })))
     .pipe($.if(!PRODUCTION, $.sourcemaps.write()))
     .pipe(gulp.dest(PATHS.dist + '/assets/css'))
-    .pipe(browser.reload({ stream: true }));
+    .pipe(browser.reload({
+      stream: true
+    }));
 }
 
 // Combine JavaScript into one file
@@ -192,7 +212,7 @@ function sass() {
 //       ignore: ['what-input.js']
 //     }))
 //     //.pipe($.concat('app.es5.js'))
- 
+
 //     .pipe(gulp.dest(PATHS.dist + '/assets/js'));
 // }
 
@@ -201,10 +221,13 @@ function javascript() {
   return gulp.src(PATHS.javascript)
     // .pipe($.sourcemaps.init())
     .pipe($.babel({
-      ignore: ['what-input.js']}))
+      ignore: ['what-input.js']
+    }))
     .pipe($.concat('app.js'))
     .pipe($.if(PRODUCTION, $.uglify()
-      .on('error', e => { console.log(e); })
+      .on('error', e => {
+        console.log(e);
+      })
     ))
     // .pipe($.if(!PRODUCTION, $.sourcemaps.write()))
     .pipe(gulp.dest(PATHS.dist + '/assets/js'));
@@ -223,7 +246,8 @@ function images() {
 // Start a server with BrowserSync to preview the site in
 function server(done) {
   browser.init({
-    server: PATHS.dist, port: PORT
+    server: PATHS.dist,
+    port: PORT
   });
   done();
 }
@@ -237,7 +261,7 @@ function reload(done) {
 // Watch for changes to static assets, pages, Sass, and JavaScript
 function watch() {
   gulp.watch(PATHS.assets, copy);
-  gulp.watch(['src/pages/**/*.html','src/pages/**/*.md']).on('all', gulp.series(pages, browser.reload));
+  gulp.watch(['src/pages/**/*.html', 'src/pages/**/*.md']).on('all', gulp.series(pages, browser.reload));
   gulp.watch('src/layouts/**/*.html').on('all', gulp.series(pages, browser.reload));
   gulp.watch('src/assets/scss/**/*.scss').on('all', sass);
   gulp.watch('src/assets/js/**/*.js').on('all', gulp.series(javascript, browser.reload));

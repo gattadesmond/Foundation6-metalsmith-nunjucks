@@ -1,9 +1,8 @@
-{{#extend "default"}}
+{% extends "default.html" %}
 
-{{#content "main"}}
+{% block main %}
 
-
-
+{{ super() }}
 
  <div class="row">
   <div class="large-12 columns">
@@ -164,6 +163,4 @@ scsc {{ title }}
 
 
 
-{{/content}}
-
-{{/extend}}
+{% endblock %}
