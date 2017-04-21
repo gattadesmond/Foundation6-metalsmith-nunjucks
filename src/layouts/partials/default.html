@@ -1,67 +1,63 @@
 <!doctype html>
 <html class="no-js" lang="en">
-  <head>
-    <meta charset="utf-8" />
+
+<head>
+    <meta charset="utf-8"/>
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Foundation for Sites</title>
-    <link rel="stylesheet" href="assets/css/app.css" inline>
-  </head>
-  <body>
+    <link rel="stylesheet" href="assets/css/app.css">
+</head>
+
+<body>
 
 
-          {% block "header" %}
+{% block header %}
+<div class="top-bar">
+    <div class="top-bar-left">
+        <ul class="menu">
+            <li class="menu-text">Foundation metalsmith nunjucks</li>
+            <li><a href="#">One</a></li>
+            <li><a href="#">Two</a></li>
+        </ul>
+    </div>
+    <div class="top-bar-right">
+        <ul class="menu">
+            <li><a href="#">Three</a></li>
+            <li><a href="#">Four</a></li>
+            <li><a href="#">Five</a></li>
+            <li><a href="#">Six</a></li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
 
-          <div class="row">
-              <nav class="nav">
+{% block main %}
 
-              </nav>
-          </div>
+{% endblock %}
 
-
-          <nav class="nav" id="nav">
-              <div class="nav-hamburger">
-
-                  <div class="hamburger hamburger--elastic" tabindex="0"aria-label="Menu" role="button" aria-controls="navigation">
-
-                      <div class="hamburger-box">
-                          <div class="hamburger-inner"></div>
-                      </div>
-                  </div>
-
-              </div>
-
-              <div class="nav-logo">
-
-                  <a href="">
-                      <img src="" alt="">
-                  </a>
-
-              </div>
+{% block footer %}
 
 
+<hr>
+<div class="row column">
+    <ul class="menu">
+        <li><a href="#">One</a></li>
+        <li><a href="#">Two</a></li>
+        <li><a href="#">Three</a></li>
+        <li><a href="#">Four</a></li>
+    </ul>
+</div>
 
-          </nav>
+{% endblock %}
 
+{% block scripts %}
 
-          {% endblock %}
+<script src="assets/js/app.js"></script>
 
-          {% block main %}
-
-          {% endblock %}
-
-          {% block footer %}
-
-           {% endblock %}
-
-
- 
-    <script src="assets/js/app.js"></script>
-
-   {% block scripts %}
-          
-           {% endblock %}
+{% endblock %}
 
 
-  </body>
+</body>
+
 </html>

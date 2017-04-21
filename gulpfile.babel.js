@@ -4,7 +4,6 @@ import plugins from 'gulp-load-plugins';
 import yargs from 'yargs';
 import browser from 'browser-sync';
 import gulp from 'gulp';
-// import panini   from 'panini';
 import rimraf from 'rimraf';
 import sherpa from 'style-sherpa';
 import yaml from 'js-yaml';
@@ -15,7 +14,6 @@ import metalsmithLayouts from 'metalsmith-layouts';
 import metalsmithMarkdown from 'metalsmith-markdown';
 import metalsmithMatters from 'metalsmith-matters';
 import metalsmithCollections from 'metalsmith-collections';
-import metadata from 'metalsmith-metadata-directory';
 
 import nunjucks from 'nunjucks';
 nunjucks.configure('src/layouts', {
@@ -24,11 +22,6 @@ nunjucks.configure('src/layouts', {
   "noCache": true
 })
 
-
-
-// import Handlebars       from 'handlebars';
-
-// require('./src/helpers/handlebars-helper.js')(Handlebars);
 
 import inline from 'gulp-inline-source';
 
@@ -73,18 +66,6 @@ function copy() {
     .pipe(gulp.dest(PATHS.dist + '/assets'));
 }
 
-// Copy page templates into finished HTML files
-// function pages2() {
-//   return gulp.src('src/pages/**/*.{html,hbs,handlebars}')
-//     .pipe(panini({
-//       root: 'src/pages/',
-//       layouts: 'src/layouts/',
-//       partials: 'src/partials/',
-//       data: 'src/data/',
-//       helpers: 'src/helpers/'
-//     }))
-//     .pipe(gulp.dest(PATHS.dist));
-// }
 
 function pages() {
   return gulp.src('src/pages/**')
@@ -102,10 +83,7 @@ function pages() {
       destination: '/dist',
 
       use: [
-        metadata({
-          directory: 'src/data/**/*.json'
-        }),
-
+   
         metalsmithMatters({
           '_enable': true,
           'delims': ['---json', '---'],
@@ -200,23 +178,6 @@ function sass() {
     }));
 }
 
-// Combine JavaScript into one file
-// In production, the file is minified
-
-// function javascriptApp(){
-//   return gulp.src([
-//     "src/assets/js/*.js"
-//   ])
-//     .pipe($.babel({
-//       "presets": ["es2015"],
-//       ignore: ['what-input.js']
-//     }))
-//     //.pipe($.concat('app.es5.js'))
-
-//     .pipe(gulp.dest(PATHS.dist + '/assets/js'));
-// }
-
-
 function javascript() {
   return gulp.src(PATHS.javascript)
     // .pipe($.sourcemaps.init())
@@ -266,5 +227,5 @@ function watch() {
   gulp.watch('src/assets/scss/**/*.scss').on('all', sass);
   gulp.watch('src/assets/js/**/*.js').on('all', gulp.series(javascript, browser.reload));
   gulp.watch('src/assets/img/**/*').on('all', gulp.series(images, browser.reload));
-  // gulp.watch('src/styleguide/**').on('all', gulp.series(styleGuide, browser.reload));
+  gulp.watch('src/styleguide/**').on('all', gulp.series(styleGuide, browser.reload));
 }
