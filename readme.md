@@ -5,7 +5,7 @@
 Zurb Foundation 6 - Metalsmith is a Gulp-powered build system with these features :
 
 - Metalsmith is a static site generators [Metalsmith](https://github.com/segmentio/metalsmith)
-- Handlebars HTML template [Handlebar JS](https://github.com/wycats/handlebars.js/)
+- Nunjucks - a rich and powerful templating language for JavaScript.[Nunjucks](https://mozilla.github.io/nunjucks/)
 - JavaScript concatenation
 - Built-in BrowserSync server
 - For production builds:
@@ -62,10 +62,8 @@ Many thanks for ZURB Template.
 ## Library and plugins inlcude :
 
 ### CSS library :
-- Bourbon - sass mixins library [Bourbon](http://bourbon.io)
 - Hamburgers - CSS-animated hamburgers [Hamburgers](https://jonsuh.com/hamburgers/)
 - Themify icons - https://themify.me/themify-icons
-
 
 ### Plugins include
 - Lazysizes - lazyloader for images - https://github.com/aFarkas/lazysizes
