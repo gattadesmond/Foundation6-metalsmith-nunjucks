@@ -11,7 +11,7 @@ Zurb Foundation 6 - Metalsmith is a Gulp-powered build system with these feature
   - CSS compression
   - JavaScript compression
   - Image compression
-  - CSS inline
+  - CSS, JS inline
 
 ## How to use
 
@@ -73,4 +73,4 @@ src/
 - Swiper - http://idangero.us/swiper/#.WKVXzvmLSUk
 
 
-##Many thanks for ZURB Team ^^.
+## Many thanks for ZURB Team ^^.
